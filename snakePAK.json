@@ -1,0 +1,11 @@
+{
+    "requirements": "Python 3.6 or higher",
+    "dependencies": ["curses", "random"],
+    "commands": [
+      {
+        "name": "play-snake",
+        "description": "Play the classic Snake game in the terminal.",
+        "code": "import curses\nimport random\nscreen = curses.initscr()\ncurses.curs_set(0)\nscreen.timeout(100)\nscreen.keypad(1)\nscreen_height, screen_width = screen.getmaxyx()\nwindow = curses.newwin(screen_height, screen_width, 0, 0)\nwindow.keypad(1)\nwindow.timeout(100)\nsnake = [[screen_height//2, screen_width//4]]\nfood = [screen_height//2, screen_width//2]\nwindow.addch(food[0], food[1], curses.ACS_PI)\ndirection = curses.KEY_RIGHT\nwhile True:\n    next_key = window.getch()\n    direction = direction if next_key == -1 else next_key\n    if direction in [curses.KEY_DOWN, curses.KEY_UP]:\n        window.timeout(200)\n    else:\n        window.timeout(100)\n    new_head = [snake[0][0], snake[0][1]]\n    if direction == curses.KEY_DOWN:\n        new_head[0] += 1\n    elif direction == curses.KEY_UP:\n        new_head[0] -= 1\n    elif direction == curses.KEY_LEFT:\n        new_head[1] -= 1\n    elif direction == curses.KEY_RIGHT:\n        new_head[1] += 1\n    if new_head in snake or new_head[0] in [0, screen_height] or new_head[1] in [0, screen_width]:\n        break\n    snake.insert(0, new_head)\n    if new_head == food:\n        food = None\n        while food is None:\n            new_food = [random.randint(1, screen_height-2), random.randint(1, screen_width-2)]\n            food = new_food if new_food not in snake else None\n        window.addch(food[0], food[1], curses.ACS_PI)\n    else:\n        tail = snake.pop()\n        window.addch(tail[0], tail[1], ' ')\n    window.addch(snake[0][0], snake[0][1], curses.ACS_CKBOARD)\ncurses.endwin()\nprint('Game Over! Thanks for playing!')"
+      }
+    ]
+  }
